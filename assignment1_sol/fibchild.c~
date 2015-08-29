@@ -1,0 +1,29 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
+int main(){
+int n,i,status,a=1,b=1;
+scanf("%d",&n);
+pid_t pid;
+for(i=0;i<n;i++){   // this loop runs for nfib times and each tgime a child process is created which computes the ith fibonacci number and returns in exit()
+	pid=fork();
+	if(pid==0){  	// this condition makes sure that only child process enters this condition
+		if(i==0 || i==1){
+			printf("1,");
+			exit(1);
+		}
+		else{
+			printf("%d,",a+b);
+			exit(a+b);   
+		}
+	}
+	waitpid(pid,&status,0); // Here the parent process waits untill the current child process whose process id is pid terminates and status stores the value passed by child process in exit function
+	a=b;  	// here we update the a and b so that chold process can calculate next fibonacci number
+	b=status>>8; // value in status is required value*2^8
+}
+printf("\n");
+return 0;
+}
